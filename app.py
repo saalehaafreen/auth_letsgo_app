@@ -76,12 +76,13 @@ def login():
 # ── DELETE USER (called from webpage button) ───────────────
 @app.route('/api/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)   # modern API, replaces .get()
     if not user:
         return jsonify({'message': 'User not found'}), 404
+    username = user.username               # capture BEFORE deleting
     db.session.delete(user)
     db.session.commit()
-    return jsonify({'message': f'User {user.username} deleted successfully'}), 200
+    return jsonify({'message': f'User {username} deleted successfully'}), 200
 
 
 # ── JSON API ───────────────────────────────────────────────
